@@ -5,13 +5,19 @@ import java.util.Optional;
 public class Square {
   private final Position position;
   private Piece piece;
+  private final boolean isLegal;
 
-  public Square(Position position) {
+  public Square(Position position, boolean isLegal) {
     this.position = position;
+    this.isLegal = isLegal;
   }
 
   public Position getPosition() {
     return position;
+  }
+
+  public boolean isLegal() {
+    return isLegal;
   }
 
   public boolean hasPiece() {
@@ -37,6 +43,7 @@ public class Square {
 
   @Override
   public String toString() {
-    return position.toNotation() + (hasPiece() ? " : " + piece : " : EMPTY");
+    return position.toNotation() + (isLegal ? " (LEGAL)" : " (ILLEGAL)") +
+        (hasPiece() ? " : " + piece : "");
   }
 }

@@ -17,15 +17,14 @@ public class Rook extends Piece {
   @Override
   public Set<Position> getValidMoves(Position position, Board board) {
     Set<Position> validMoves = new HashSet<>();
-    addMovesInDirection(position, board, validMoves, 1, 0);
-    addMovesInDirection(position, board, validMoves, -1, 0);
-    addMovesInDirection(position, board, validMoves, 0, 1);
-    addMovesInDirection(position, board, validMoves, 0, -1);
-
+    addDirectionMoves(position, board, validMoves, 1, 0);
+    addDirectionMoves(position, board, validMoves, -1, 0);
+    addDirectionMoves(position, board, validMoves, 0, 1);
+    addDirectionMoves(position, board, validMoves, 0, -1);
     return validMoves;
   }
 
-  private void addMovesInDirection(Position position, Board board, Set<Position> moves, int fileDelta, int rankDelta) {
+  private void addDirectionMoves(Position position, Board board, Set<Position> moves, int fileDelta, int rankDelta) {
     char currentFile = position.getFile();
     int currentRank = position.getRank();
 
@@ -33,10 +32,11 @@ public class Rook extends Piece {
       currentFile = (char) (currentFile + fileDelta);
       currentRank = currentRank + rankDelta;
 
-      Position target = new Position(currentFile, currentRank);
-      if (!isValidPosition(target)) {
+      if (!isValidFile(currentFile) || !isValidRank(currentRank)) {
         break;
       }
+
+      Position target = new Position(currentFile, currentRank);
 
       if (board.hasPiece(target)) {
         Piece piece = board.getPiece(target).get();
@@ -50,8 +50,11 @@ public class Rook extends Piece {
     }
   }
 
-  private boolean isValidPosition(Position position) {
-    return position.getFile() >= 'a' && position.getFile() <= 'h' &&
-        position.getRank() >= 1 && position.getRank() <= 8;
+  private boolean isValidFile(char file) {
+    return file >= 'a' && file <= 'h';
+  }
+
+  private boolean isValidRank(int rank) {
+    return rank >= 1 && rank <= 8;
   }
 }

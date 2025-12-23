@@ -23,7 +23,6 @@ public class Queen extends Piece {
   }
 
   private void addStraightMoves(Position position, Board board, Set<Position> moves) {
-
     addDirectionMoves(position, board, moves, 1, 0);
     addDirectionMoves(position, board, moves, -1, 0);
     addDirectionMoves(position, board, moves, 0, 1);
@@ -45,10 +44,11 @@ public class Queen extends Piece {
       currentFile = (char) (currentFile + fileDelta);
       currentRank = currentRank + rankDelta;
 
-      Position target = new Position(currentFile, currentRank);
-      if (!isValidPosition(target)) {
+      if (!isValidFile(currentFile) || !isValidRank(currentRank)) {
         break;
       }
+
+      Position target = new Position(currentFile, currentRank);
 
       if (board.hasPiece(target)) {
         Piece piece = board.getPiece(target).get();
@@ -62,8 +62,11 @@ public class Queen extends Piece {
     }
   }
 
-  private boolean isValidPosition(Position position) {
-    return position.getFile() >= 'a' && position.getFile() <= 'h' &&
-        position.getRank() >= 1 && position.getRank() <= 8;
+  private boolean isValidFile(char file) {
+    return file >= 'a' && file <= 'h';
+  }
+
+  private boolean isValidRank(int rank) {
+    return rank >= 1 && rank <= 8;
   }
 }

@@ -12,24 +12,24 @@ public final class Position {
   }
 
   public Position(String notation) {
-    if (notation == null || notation.length() != 2) {
+    if (notation == null || notation.length() < 2 || notation.length() > 3) {
       throw new IllegalArgumentException("Invalid position notation: " + notation);
     }
     this.file = Character.toLowerCase(notation.charAt(0));
-    this.rank = Character.getNumericValue(notation.charAt(1));
+    this.rank = Integer.parseInt(notation.substring(1));
     validateFile(this.file);
     validateRank(this.rank);
   }
 
   private void validateFile(char file) {
-    if (file < 'a' || file > 'h') {
-      throw new IllegalArgumentException("Invalid file: " + file);
+    if (file < 'a' || file > 'p') {
+      throw new IllegalArgumentException("Invalid file: " + file + " (must be a-p)");
     }
   }
 
   private void validateRank(int rank) {
-    if (rank < 1 || rank > 8) {
-      throw new IllegalArgumentException("Invalid rank: " + rank);
+    if (rank < 1 || rank > 16) {
+      throw new IllegalArgumentException("Invalid rank: " + rank + " (must be 1-16)");
     }
   }
 
