@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.Optional;
 import org.robustov.chess.pieces.King;
 import org.robustov.chess.pieces.Rook;
-import org.robustov.chess.pieces.King;
-import org.robustov.chess.pieces.King;
-import org.robustov.chess.pieces.King;
+import org.robustov.chess.pieces.Queen;
+import org.robustov.chess.pieces.Pawn;
+import org.robustov.chess.pieces.Knight;
+import org.robustov.chess.pieces.Bishop;
 
 public class Board {
   private final Map<Position, Square> squares;
