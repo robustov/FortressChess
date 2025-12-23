@@ -10,11 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Set;
 
 public class BoardPanel extends JPanel {
   private final Board board;
   private final int squareSize = 40;
   private Position selectedPosition = null;
+  private Set<Position> validMoves = null;
 
   public BoardPanel(Board board) {
     this.board = board;
@@ -32,17 +34,30 @@ public class BoardPanel extends JPanel {
           int rank = row + 1;
           Position position = new Position(file, rank);
 
-          if (board.isLegalPosition(position)) {
-            if (selectedPosition == null) {
+          if (!board.isLegalPosition(position)) {
+            return;
+          }
+
+          if (selectedPosition == null) {
+            // Select a piece if there is one
+            if (board.hasPiece(position)) {
               selectedPosition = position;
-            } else {
+              Piece piece = board.getPiece(position).get();
+              validMoves = piece.getValidMoves(position, board);
+              repaint();
+            }
+          } else {
+            // Try to move to target position
+            if (validMoves != null && validMoves.contains(position)) {
               try {
                 board.movePiece(selectedPosition, position);
-                selectedPosition = null;
               } catch (Exception ex) {
-                selectedPosition = position;
+                System.err.println("Move failed: " + ex.getMessage());
               }
             }
+            // Clear selection regardless of move success
+            selectedPosition = null;
+            validMoves = null;
             repaint();
           }
         }
@@ -74,6 +89,15 @@ public class BoardPanel extends JPanel {
 
           g2d.setColor(java.awt.Color.BLACK);
           g2d.drawRect(x, y, squareSize, squareSize);
+
+          // Draw valid moves as green dots
+          if (validMoves != null && validMoves.contains(position)) {
+            g2d.setColor(new java.awt.Color(0, 200, 0, 150));
+            int dotSize = squareSize / 3;
+            int dotX = x + (squareSize - dotSize) / 2;
+            int dotY = y + (squareSize - dotSize) / 2;
+            g2d.fillOval(dotX, dotY, dotSize, dotSize);
+          }
 
           if (board.hasPiece(position)) {
             Piece piece = board.getPiece(position).get();

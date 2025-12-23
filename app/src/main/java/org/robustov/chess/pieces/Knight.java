@@ -29,6 +29,11 @@ public class Knight extends Piece {
       char targetFile = (char) (file + move[0]);
       int targetRank = rank + move[1];
 
+      // Validate coordinates before creating Position
+      if (!isValidFile(targetFile) || !isValidRank(targetRank)) {
+        continue;
+      }
+
       Position target = new Position(targetFile, targetRank);
 
       if (!board.isLegalPosition(target)) {
@@ -41,5 +46,13 @@ public class Knight extends Piece {
     }
 
     return validMoves;
+  }
+
+  private boolean isValidFile(char file) {
+    return file >= 'a' && file <= 'p';
+  }
+
+  private boolean isValidRank(int rank) {
+    return rank >= 1 && rank <= 16;
   }
 }

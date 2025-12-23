@@ -44,6 +44,11 @@ public class Queen extends Piece {
       currentFile = (char) (currentFile + fileDelta);
       currentRank = currentRank + rankDelta;
 
+      // Validate coordinates before creating Position
+      if (!isValidFile(currentFile) || !isValidRank(currentRank)) {
+        break;
+      }
+
       Position target = new Position(currentFile, currentRank);
 
       if (!board.isLegalPosition(target)) {
@@ -60,5 +65,13 @@ public class Queen extends Piece {
 
       moves.add(target);
     }
+  }
+
+  private boolean isValidFile(char file) {
+    return file >= 'a' && file <= 'p';
+  }
+
+  private boolean isValidRank(int rank) {
+    return rank >= 1 && rank <= 16;
   }
 }

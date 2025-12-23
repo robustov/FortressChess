@@ -27,14 +27,18 @@ public class King extends Piece {
       char targetFile = (char) (file + fileOffsets[i]);
       int targetRank = rank + rankOffsets[i];
 
+      // Validate coordinates before creating Position
+      if (!isValidFile(targetFile) || !isValidRank(targetRank)) {
+        continue;
+      }
+
       Position target = new Position(targetFile, targetRank);
 
       if (!board.isLegalPosition(target)) {
         continue;
       }
 
-      if (!board.hasPiece(target) ||
-          board.getPiece(target).get().getColor() != getColor()) {
+      if (!board.hasPiece(target) || board.getPiece(target).get().getColor() != getColor()) {
         validMoves.add(target);
       }
     }
@@ -64,13 +68,13 @@ public class King extends Piece {
   private boolean canCastleKingside(Position position, Board board) {
     int rank = position.getRank();
     char kingFile = position.getFile();
-    char rookFile = (char) ('p'); // Rightmost file
+    char rookFile = (char) ('p');
 
     // Check if squares between king and rook are legal and empty
     Position firstSquare = new Position((char) (kingFile + 1), rank);
     Position secondSquare = new Position((char) (kingFile + 2), rank);
 
-    if (!board.isLegalPosition(firstSquare) || !board.isLegalPosition(secondSquare)) {
+    if (!isValidPosition(firstSquare, board) || !isValidPosition(secondSquare, board)) {
       return false;
     }
 
@@ -78,9 +82,8 @@ public class King extends Piece {
       return false;
     }
 
-    // Check if rook exists and hasn't moved
     Position rookPosition = new Position(rookFile, rank);
-    if (!board.isLegalPosition(rookPosition) || !board.hasPiece(rookPosition) ||
+    if (!isValidPosition(rookPosition, board) || !board.hasPiece(rookPosition) ||
         !(board.getPiece(rookPosition).get() instanceof Rook rook) ||
         rook.hasMoved()) {
       return false;
@@ -92,15 +95,14 @@ public class King extends Piece {
   private boolean canCastleQueenside(Position position, Board board) {
     int rank = position.getRank();
     char kingFile = position.getFile();
-    char rookFile = 'a'; // Leftmost file
+    char rookFile = 'a';
 
-    // Check if squares between king and rook are legal and empty
     Position firstSquare = new Position((char) (kingFile - 1), rank);
     Position secondSquare = new Position((char) (kingFile - 2), rank);
     Position thirdSquare = new Position((char) (kingFile - 3), rank);
 
-    if (!board.isLegalPosition(firstSquare) || !board.isLegalPosition(secondSquare) ||
-        !board.isLegalPosition(thirdSquare)) {
+    if (!isValidPosition(firstSquare, board) || !isValidPosition(secondSquare, board) ||
+        !isValidPosition(thirdSquare, board)) {
       return false;
     }
 
@@ -108,14 +110,26 @@ public class King extends Piece {
       return false;
     }
 
-    // Check if rook exists and hasn't moved
     Position rookPosition = new Position(rookFile, rank);
-    if (!board.isLegalPosition(rookPosition) || !board.hasPiece(rookPosition) ||
+    if (!isValidPosition(rookPosition, board) || !board.hasPiece(rookPosition) ||
         !(board.getPiece(rookPosition).get() instanceof Rook rook) ||
         rook.hasMoved()) {
       return false;
     }
 
     return true;
+  }
+
+  private boolean isValidPosition(Position position, Board board) {
+    return isValidFile(position.getFile()) && isValidRank(position.getRank()) &&
+        board.isLegalPosition(position);
+  }
+
+  private boolean isValidFile(char file) {
+    return file >= 'a' && file <= 'p';
+  }
+
+  private boolean isValidRank(int rank) {
+    return rank >= 1 && rank <= 16;
   }
 }
