@@ -18,15 +18,15 @@ public class Pawn extends Piece {
   public Set<Position> getValidMoves(Position position, Board board) {
     Set<Position> validMoves = new HashSet<>();
     int direction = getColor() == Color.WHITE ? 1 : -1;
-    int startRank = getColor() == Color.WHITE ? 2 : 7;
+    int startRank = getColor() == Color.WHITE ? 2 : 15;
 
     Position forward = new Position(position.getFile(), position.getRank() + direction);
-    if (isValidPosition(forward) && !board.hasPiece(forward)) {
+    if (board.isLegalPosition(forward) && !board.hasPiece(forward)) {
       validMoves.add(forward);
 
       if (!hasMoved() && position.getRank() == startRank) {
         Position doubleForward = new Position(position.getFile(), position.getRank() + 2 * direction);
-        if (!board.hasPiece(doubleForward)) {
+        if (board.isLegalPosition(doubleForward) && !board.hasPiece(doubleForward)) {
           validMoves.add(doubleForward);
         }
       }
@@ -35,7 +35,7 @@ public class Pawn extends Piece {
     char[] captureFiles = { (char) (position.getFile() - 1), (char) (position.getFile() + 1) };
     for (char file : captureFiles) {
       Position capturePos = new Position(file, position.getRank() + direction);
-      if (isValidPosition(capturePos)) {
+      if (board.isLegalPosition(capturePos)) {
         if (board.hasPiece(capturePos) && board.getPiece(capturePos).get().getColor() != getColor()) {
           validMoves.add(capturePos);
         }
@@ -43,10 +43,5 @@ public class Pawn extends Piece {
     }
 
     return validMoves;
-  }
-
-  private boolean isValidPosition(Position position) {
-    return position.getFile() >= 'a' && position.getFile() <= 'h' &&
-        position.getRank() >= 1 && position.getRank() <= 8;
   }
 }

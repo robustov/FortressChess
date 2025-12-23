@@ -28,11 +28,14 @@ public class King extends Piece {
       int targetRank = rank + rankOffsets[i];
 
       Position target = new Position(targetFile, targetRank);
-      if (isValidPosition(target)) {
-        if (!board.hasPiece(target) ||
-            board.getPiece(target).get().getColor() != getColor()) {
-          validMoves.add(target);
-        }
+
+      if (!board.isLegalPosition(target)) {
+        continue;
+      }
+
+      if (!board.hasPiece(target) ||
+          board.getPiece(target).get().getColor() != getColor()) {
+        validMoves.add(target);
       }
     }
 
@@ -41,36 +44,43 @@ public class King extends Piece {
     return validMoves;
   }
 
-  private boolean isValidPosition(Position position) {
-    return position.getFile() >= 'a' && position.getFile() <= 'h' &&
-        position.getRank() >= 1 && position.getRank() <= 8;
-  }
-
   private void addCastlingMoves(Position position, Board board, Set<Position> validMoves) {
     if (hasMoved())
       return;
 
     if (canCastleKingside(position, board)) {
-      validMoves.add(new Position('g', position.getRank()));
+      char kingFile = position.getFile();
+      int rank = position.getRank();
+      validMoves.add(new Position((char) (kingFile + 2), rank));
     }
 
     if (canCastleQueenside(position, board)) {
-      validMoves.add(new Position('c', position.getRank()));
+      char kingFile = position.getFile();
+      int rank = position.getRank();
+      validMoves.add(new Position((char) (kingFile - 2), rank));
     }
   }
 
   private boolean canCastleKingside(Position position, Board board) {
     int rank = position.getRank();
+    char kingFile = position.getFile();
+    char rookFile = (char) ('p'); // Rightmost file
 
-    Position fSquare = new Position('f', rank);
-    Position gSquare = new Position('g', rank);
+    // Check if squares between king and rook are legal and empty
+    Position firstSquare = new Position((char) (kingFile + 1), rank);
+    Position secondSquare = new Position((char) (kingFile + 2), rank);
 
-    if (board.hasPiece(fSquare) || board.hasPiece(gSquare)) {
+    if (!board.isLegalPosition(firstSquare) || !board.isLegalPosition(secondSquare)) {
       return false;
     }
 
-    Position rookPosition = new Position('h', rank);
-    if (!board.hasPiece(rookPosition) ||
+    if (board.hasPiece(firstSquare) || board.hasPiece(secondSquare)) {
+      return false;
+    }
+
+    // Check if rook exists and hasn't moved
+    Position rookPosition = new Position(rookFile, rank);
+    if (!board.isLegalPosition(rookPosition) || !board.hasPiece(rookPosition) ||
         !(board.getPiece(rookPosition).get() instanceof Rook rook) ||
         rook.hasMoved()) {
       return false;
@@ -81,17 +91,26 @@ public class King extends Piece {
 
   private boolean canCastleQueenside(Position position, Board board) {
     int rank = position.getRank();
+    char kingFile = position.getFile();
+    char rookFile = 'a'; // Leftmost file
 
-    Position bSquare = new Position('b', rank);
-    Position cSquare = new Position('c', rank);
-    Position dSquare = new Position('d', rank);
+    // Check if squares between king and rook are legal and empty
+    Position firstSquare = new Position((char) (kingFile - 1), rank);
+    Position secondSquare = new Position((char) (kingFile - 2), rank);
+    Position thirdSquare = new Position((char) (kingFile - 3), rank);
 
-    if (board.hasPiece(bSquare) || board.hasPiece(cSquare) || board.hasPiece(dSquare)) {
+    if (!board.isLegalPosition(firstSquare) || !board.isLegalPosition(secondSquare) ||
+        !board.isLegalPosition(thirdSquare)) {
       return false;
     }
 
-    Position rookPosition = new Position('a', rank);
-    if (!board.hasPiece(rookPosition) ||
+    if (board.hasPiece(firstSquare) || board.hasPiece(secondSquare) || board.hasPiece(thirdSquare)) {
+      return false;
+    }
+
+    // Check if rook exists and hasn't moved
+    Position rookPosition = new Position(rookFile, rank);
+    if (!board.isLegalPosition(rookPosition) || !board.hasPiece(rookPosition) ||
         !(board.getPiece(rookPosition).get() instanceof Rook rook) ||
         rook.hasMoved()) {
       return false;

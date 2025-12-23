@@ -29,22 +29,17 @@ public class Knight extends Piece {
       char targetFile = (char) (file + move[0]);
       int targetRank = rank + move[1];
 
-      if (isValidFile(targetFile) && isValidRank(targetRank)) {
-        Position target = new Position(targetFile, targetRank);
-        if (!board.hasPiece(target) || board.getPiece(target).get().getColor() != getColor()) {
-          validMoves.add(target);
-        }
+      Position target = new Position(targetFile, targetRank);
+
+      if (!board.isLegalPosition(target)) {
+        continue;
+      }
+
+      if (!board.hasPiece(target) || board.getPiece(target).get().getColor() != getColor()) {
+        validMoves.add(target);
       }
     }
 
     return validMoves;
-  }
-
-  private boolean isValidFile(char file) {
-    return file >= 'a' && file <= 'h';
-  }
-
-  private boolean isValidRank(int rank) {
-    return rank >= 1 && rank <= 8;
   }
 }
