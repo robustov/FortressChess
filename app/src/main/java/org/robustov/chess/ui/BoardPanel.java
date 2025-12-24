@@ -1,12 +1,6 @@
 package org.robustov.chess.ui;
 
-import org.robustov.chess.model.Board;
-import org.robustov.chess.model.Piece;
-import org.robustov.chess.model.Position;
-import org.robustov.chess.model.Square;
-import org.robustov.chess.model.Color;
-import org.robustov.chess.model.PieceType;
-
+import org.robustov.chess.model.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -15,7 +9,7 @@ import java.util.Set;
 
 public class BoardPanel extends JPanel {
   private final Board board;
-  private final int squareSize = 40;
+  private final int squareSize = 45; // Increased size for better piece visibility
   private Position selectedPosition = null;
   private Set<Position> validMoves = null;
 
@@ -104,7 +98,8 @@ public class BoardPanel extends JPanel {
 
           if (board.hasPiece(position)) {
             Piece piece = board.getPiece(position).get();
-            renderPiece(g2d, piece, x, y, squareSize);
+            PieceRenderer.renderPiece(g2d, piece.getType(), piece.getColor(),
+                x + 2, y + 2, squareSize - 4);
           }
 
           if (selectedPosition != null && selectedPosition.equals(position)) {
@@ -121,44 +116,6 @@ public class BoardPanel extends JPanel {
     drawStatusBar(g2d);
   }
 
-  private void renderPiece(Graphics2D g2d, Piece piece, int x, int y, int size) {
-    java.awt.Color pieceColor = getPlayerColor(piece.getColor());
-    PieceType pieceType = piece.getType();
-    int centerX = x + size / 2;
-    int centerY = y + size / 2;
-    int pieceSize = size * 3 / 4;
-
-    g2d.setColor(pieceColor);
-
-    switch (pieceType) {
-      case PAWN:
-        g2d.fillOval(centerX - pieceSize / 4, centerY - pieceSize / 4, pieceSize / 2, pieceSize / 2);
-        break;
-      case KNIGHT:
-        int[] triangleX = { centerX, centerX - pieceSize / 3, centerX + pieceSize / 3 };
-        int[] triangleY = { centerY - pieceSize / 4, centerY + pieceSize / 4, centerY + pieceSize / 4 };
-        g2d.fillPolygon(triangleX, triangleY, 3);
-        break;
-      case BISHOP:
-        g2d.fillOval(centerX - pieceSize / 4, centerY - pieceSize / 4, pieceSize / 2, pieceSize / 2);
-        g2d.drawLine(centerX, centerY - pieceSize / 3, centerX, centerY + pieceSize / 3);
-        break;
-      case ROOK:
-        g2d.fillRect(centerX - pieceSize / 4, centerY - pieceSize / 4, pieceSize / 2, pieceSize / 2);
-        break;
-      case QUEEN:
-        g2d.fillOval(centerX - pieceSize / 3, centerY - pieceSize / 3, pieceSize * 2 / 3, pieceSize * 2 / 3);
-        break;
-      case KING:
-        g2d.fillRect(centerX - pieceSize / 6, centerY - pieceSize / 3, pieceSize / 3, pieceSize / 2);
-        g2d.fillOval(centerX - pieceSize / 6, centerY - pieceSize / 2, pieceSize / 3, pieceSize / 3);
-        break;
-    }
-
-    g2d.setColor(java.awt.Color.BLACK);
-    g2d.setStroke(new BasicStroke(1));
-  }
-
   private void drawStatusBar(Graphics2D g2d) {
     int statusBarY = 16 * squareSize;
     g2d.setColor(java.awt.Color.DARK_GRAY);
@@ -168,18 +125,9 @@ public class BoardPanel extends JPanel {
     g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
 
     String currentPlayerName = board.getCurrentPlayer().name();
-    java.awt.Color playerColor = getPlayerColor(board.getCurrentPlayer());
+    java.awt.Color playerColor = PieceRenderer.getPlayerColor(board.getCurrentPlayer());
 
     g2d.setColor(playerColor);
     g2d.drawString("Current Turn: " + currentPlayerName, 10, statusBarY + 20);
-  }
-
-  private java.awt.Color getPlayerColor(Color color) {
-    return switch (color) {
-      case YELLOW -> new java.awt.Color(255, 255, 0); // Yellow
-      case BLUE -> new java.awt.Color(0, 0, 255); // Blue
-      case RED -> new java.awt.Color(255, 0, 0); // Red
-      case GREEN -> new java.awt.Color(0, 128, 0); // Green
-    };
   }
 }
