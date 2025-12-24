@@ -3,20 +3,22 @@ package org.robustov.chess.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.robustov.chess.pieces.Rook;
-import org.robustov.chess.pieces.Queen;
-import org.robustov.chess.pieces.Pawn;
-import org.robustov.chess.pieces.Knight;
-import org.robustov.chess.pieces.Bishop;
 import org.robustov.chess.pieces.King;
+import org.robustov.chess.pieces.Queen;
+import org.robustov.chess.pieces.Rook;
+import org.robustov.chess.pieces.Pawn;
+import org.robustov.chess.pieces.Bishop;
+import org.robustov.chess.pieces.Knight;
 
 public class Board {
   private final Map<Position, Square> squares;
   private final Map<Color, King> kings;
+  private Color currentPlayer;
 
   public Board() {
     squares = new HashMap<>();
     kings = new HashMap<>();
+    currentPlayer = Color.YELLOW;
     initializeFortressBoard();
   }
 
@@ -80,6 +82,10 @@ public class Board {
 
     Piece piece = sourceSquare.getPiece().orElseThrow();
 
+    if (piece.getColor() != currentPlayer) {
+      throw new IllegalStateException("Not " + currentPlayer + "'s turn. Current turn: " + currentPlayer);
+    }
+
     if (targetSquare.hasPiece()) {
       targetSquare.removePiece();
     }
@@ -87,6 +93,16 @@ public class Board {
     sourceSquare.removePiece();
     targetSquare.setPiece(piece);
     piece.markAsMoved();
+
+    advanceTurn();
+  }
+
+  private void advanceTurn() {
+    currentPlayer = currentPlayer.getNextPlayer();
+  }
+
+  public Color getCurrentPlayer() {
+    return currentPlayer;
   }
 
   public Square getSquare(Position position) {
@@ -122,13 +138,12 @@ public class Board {
       return false;
     }
 
-    Color opponentColor = color.getOpponent();
     for (Position position : squares.keySet()) {
       if (!isLegalPosition(position))
         continue;
 
       Optional<Piece> pieceOptional = getPiece(position);
-      if (pieceOptional.isPresent() && pieceOptional.get().getColor() == opponentColor) {
+      if (pieceOptional.isPresent() && pieceOptional.get().getColor() != color) {
         Piece piece = pieceOptional.get();
         if (piece.isValidMove(position, kingPosition, this)) {
           return true;
@@ -158,14 +173,19 @@ public class Board {
       }
     });
     kings.clear();
+    currentPlayer = Color.YELLOW;
 
-    setupPlayerCorner(Color.WHITE, 'a', 1, 1);
+    // Player 1 (Yellow) - bottom-left corner area
+    setupPlayerCorner(Color.YELLOW, 'a', 1, 1);
 
-    setupPlayerCorner(Color.BLACK, 'm', 1, 1);
+    // Player 2 (Blue) - bottom-right corner area
+    setupPlayerCorner(Color.BLUE, 'm', 1, 1);
 
-    setupPlayerCorner(Color.WHITE, 'a', 13, -1);
+    // Player 3 (Red) - top-left corner area
+    setupPlayerCorner(Color.RED, 'a', 13, -1);
 
-    setupPlayerCorner(Color.BLACK, 'm', 13, -1);
+    // Player 4 (Green) - top-right corner area
+    setupPlayerCorner(Color.GREEN, 'm', 13, -1);
   }
 
   private void setupPlayerCorner(Color color, char startFile, int startRank, int direction) {

@@ -5,6 +5,7 @@ import org.robustov.chess.model.Piece;
 import org.robustov.chess.model.Position;
 import org.robustov.chess.model.Square;
 import org.robustov.chess.model.Color;
+import org.robustov.chess.model.PieceType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,12 +21,16 @@ public class BoardPanel extends JPanel {
 
   public BoardPanel(Board board) {
     this.board = board;
-    setPreferredSize(new Dimension(16 * squareSize, 16 * squareSize));
+    setPreferredSize(new Dimension(16 * squareSize, 16 * squareSize + 30));
     setBackground(java.awt.Color.DARK_GRAY);
 
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
+        if (e.getY() > 16 * squareSize) {
+          return;
+        }
+
         int col = e.getX() / squareSize;
         int row = 15 - (e.getY() / squareSize);
 
@@ -39,15 +44,15 @@ public class BoardPanel extends JPanel {
           }
 
           if (selectedPosition == null) {
-            // Select a piece if there is one
             if (board.hasPiece(position)) {
-              selectedPosition = position;
               Piece piece = board.getPiece(position).get();
-              validMoves = piece.getValidMoves(position, board);
-              repaint();
+              if (piece.getColor() == board.getCurrentPlayer()) {
+                selectedPosition = position;
+                validMoves = piece.getValidMoves(position, board);
+                repaint();
+              }
             }
           } else {
-            // Try to move to target position
             if (validMoves != null && validMoves.contains(position)) {
               try {
                 board.movePiece(selectedPosition, position);
@@ -55,7 +60,6 @@ public class BoardPanel extends JPanel {
                 System.err.println("Move failed: " + ex.getMessage());
               }
             }
-            // Clear selection regardless of move success
             selectedPosition = null;
             validMoves = null;
             repaint();
@@ -90,7 +94,6 @@ public class BoardPanel extends JPanel {
           g2d.setColor(java.awt.Color.BLACK);
           g2d.drawRect(x, y, squareSize, squareSize);
 
-          // Draw valid moves as green dots
           if (validMoves != null && validMoves.contains(position)) {
             g2d.setColor(new java.awt.Color(0, 200, 0, 150));
             int dotSize = squareSize / 3;
@@ -101,14 +104,7 @@ public class BoardPanel extends JPanel {
 
           if (board.hasPiece(position)) {
             Piece piece = board.getPiece(position).get();
-            g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
-            java.awt.Color pieceColor = piece.getColor() == Color.WHITE ? java.awt.Color.BLACK : java.awt.Color.WHITE;
-            g2d.setColor(pieceColor);
-            String symbol = String.valueOf(piece.getSymbol());
-            FontMetrics fm = g2d.getFontMetrics();
-            int textX = x + (squareSize - fm.stringWidth(symbol)) / 2;
-            int textY = y + (squareSize + fm.getAscent()) / 2;
-            g2d.drawString(symbol, textX, textY);
+            renderPiece(g2d, piece, x, y, squareSize);
           }
 
           if (selectedPosition != null && selectedPosition.equals(position)) {
@@ -121,5 +117,69 @@ public class BoardPanel extends JPanel {
         }
       }
     }
+
+    drawStatusBar(g2d);
+  }
+
+  private void renderPiece(Graphics2D g2d, Piece piece, int x, int y, int size) {
+    java.awt.Color pieceColor = getPlayerColor(piece.getColor());
+    PieceType pieceType = piece.getType();
+    int centerX = x + size / 2;
+    int centerY = y + size / 2;
+    int pieceSize = size * 3 / 4;
+
+    g2d.setColor(pieceColor);
+
+    switch (pieceType) {
+      case PAWN:
+        g2d.fillOval(centerX - pieceSize / 4, centerY - pieceSize / 4, pieceSize / 2, pieceSize / 2);
+        break;
+      case KNIGHT:
+        int[] triangleX = { centerX, centerX - pieceSize / 3, centerX + pieceSize / 3 };
+        int[] triangleY = { centerY - pieceSize / 4, centerY + pieceSize / 4, centerY + pieceSize / 4 };
+        g2d.fillPolygon(triangleX, triangleY, 3);
+        break;
+      case BISHOP:
+        g2d.fillOval(centerX - pieceSize / 4, centerY - pieceSize / 4, pieceSize / 2, pieceSize / 2);
+        g2d.drawLine(centerX, centerY - pieceSize / 3, centerX, centerY + pieceSize / 3);
+        break;
+      case ROOK:
+        g2d.fillRect(centerX - pieceSize / 4, centerY - pieceSize / 4, pieceSize / 2, pieceSize / 2);
+        break;
+      case QUEEN:
+        g2d.fillOval(centerX - pieceSize / 3, centerY - pieceSize / 3, pieceSize * 2 / 3, pieceSize * 2 / 3);
+        break;
+      case KING:
+        g2d.fillRect(centerX - pieceSize / 6, centerY - pieceSize / 3, pieceSize / 3, pieceSize / 2);
+        g2d.fillOval(centerX - pieceSize / 6, centerY - pieceSize / 2, pieceSize / 3, pieceSize / 3);
+        break;
+    }
+
+    g2d.setColor(java.awt.Color.BLACK);
+    g2d.setStroke(new BasicStroke(1));
+  }
+
+  private void drawStatusBar(Graphics2D g2d) {
+    int statusBarY = 16 * squareSize;
+    g2d.setColor(java.awt.Color.DARK_GRAY);
+    g2d.fillRect(0, statusBarY, getWidth(), 30);
+
+    g2d.setColor(java.awt.Color.WHITE);
+    g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
+
+    String currentPlayerName = board.getCurrentPlayer().name();
+    java.awt.Color playerColor = getPlayerColor(board.getCurrentPlayer());
+
+    g2d.setColor(playerColor);
+    g2d.drawString("Current Turn: " + currentPlayerName, 10, statusBarY + 20);
+  }
+
+  private java.awt.Color getPlayerColor(Color color) {
+    return switch (color) {
+      case YELLOW -> new java.awt.Color(255, 255, 0); // Yellow
+      case BLUE -> new java.awt.Color(0, 0, 255); // Blue
+      case RED -> new java.awt.Color(255, 0, 0); // Red
+      case GREEN -> new java.awt.Color(0, 128, 0); // Green
+    };
   }
 }

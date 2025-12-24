@@ -18,14 +18,15 @@ public enum PieceType {
     return value;
   }
 
+  // This method is no longer needed for rendering but kept for other purposes
   public char getSymbol(Color color) {
     return switch (this) {
-      case PAWN -> color == Color.WHITE ? '♙' : '♟';
-      case KNIGHT -> color == Color.WHITE ? '♘' : '♞';
-      case BISHOP -> color == Color.WHITE ? '♗' : '♝';
-      case ROOK -> color == Color.WHITE ? '♖' : '♜';
-      case QUEEN -> color == Color.WHITE ? '♕' : '♛';
-      case KING -> color == Color.WHITE ? '♔' : '♚';
+      case PAWN -> 'P';
+      case KNIGHT -> 'N';
+      case BISHOP -> 'B';
+      case ROOK -> 'R';
+      case QUEEN -> 'Q';
+      case KING -> 'K';
       default -> '?';
     };
   }

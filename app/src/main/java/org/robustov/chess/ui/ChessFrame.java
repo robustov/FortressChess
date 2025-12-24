@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class ChessFrame extends JFrame {
   public ChessFrame(Board board) {
-    setTitle("Fortress Chess");
+    setTitle("Fortress Chess (Русские четвертные шахматы с крепостями)");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setResizable(false);
 
