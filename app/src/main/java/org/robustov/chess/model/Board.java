@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import org.robustov.chess.pieces.Bishop;
 import org.robustov.chess.pieces.King;
 import org.robustov.chess.pieces.Queen;
@@ -351,5 +354,92 @@ public class Board {
       }
     }
     kings.remove(color);
+  }
+
+  public String savePosition() {
+    BoardState state = new BoardState();
+    state.currentPlayer = currentPlayer;
+    Map<String, SquareState> squaresMap = new HashMap<>();
+    for (Map.Entry<Position, Square> entry : squares.entrySet()) {
+      Position pos = entry.getKey();
+      Square square = entry.getValue();
+      SquareState squareState = new SquareState();
+      squareState.legal = square.isLegal();
+      if (square.hasPiece()) {
+        Piece piece = square.getPiece().get();
+        PieceState pieceState = new PieceState();
+        pieceState.color = piece.getColor();
+        pieceState.type = piece.getType();
+        pieceState.moved = piece.hasMoved();
+        squareState.piece = pieceState;
+      }
+      squaresMap.put(pos.toString(), squareState);
+    }
+    state.squares = squaresMap;
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    return gson.toJson(state);
+  }
+
+  public void loadPosition(String json) {
+    Gson gson = new Gson();
+    BoardState state = gson.fromJson(json, BoardState.class);
+    squares.values().forEach(square -> {
+      if (square.isLegal()) {
+        square.removePiece();
+      }
+    });
+    kings.clear();
+    currentPlayer = state.currentPlayer;
+    for (Map.Entry<String, SquareState> entry : state.squares.entrySet()) {
+      Position pos = new Position(entry.getKey());
+      Square square = squares.get(pos);
+      if (square == null) {
+        throw new IllegalArgumentException("Invalid position in save: " + entry.getKey());
+      }
+      SquareState squareState = entry.getValue();
+      if (squareState.piece != null) {
+        PieceState pieceState = squareState.piece;
+        Piece piece = createPiece(pieceState.type, pieceState.color);
+        piece.setHasMoved(pieceState.moved);
+        square.setPiece(piece);
+        if (piece instanceof King) {
+          kings.put(piece.getColor(), (King) piece);
+        }
+      }
+    }
+  }
+
+  private Piece createPiece(PieceType type, Color color) {
+    return switch (type) {
+      case PAWN -> new Pawn(color);
+      case ROOK -> new Rook(color);
+      case KNIGHT -> new Knight(color);
+      case BISHOP -> new Bishop(color);
+      case QUEEN -> new Queen(color);
+      case KING -> new King(color);
+    };
+  }
+
+  public static class BoardState {
+    @SerializedName("current_player")
+    Color currentPlayer;
+    @SerializedName("squares")
+    Map<String, SquareState> squares;
+  }
+
+  public static class SquareState {
+    @SerializedName("legal")
+    boolean legal;
+    @SerializedName("piece")
+    PieceState piece;
+  }
+
+  public static class PieceState {
+    @SerializedName("color")
+    Color color;
+    @SerializedName("type")
+    PieceType type;
+    @SerializedName("moved")
+    boolean moved;
   }
 }

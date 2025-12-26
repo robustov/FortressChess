@@ -28,6 +28,10 @@ public abstract class Piece {
     hasMoved = true;
   }
 
+  public void setHasMoved(boolean moved) {
+    hasMoved = moved;
+  }
+
   public abstract Set<Position> getValidMoves(Position position, Board board);
 
   public boolean isValidMove(Position position, Position target, Board board) {

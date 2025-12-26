@@ -28,7 +28,6 @@ public class King extends Piece {
       char targetFile = (char) (file + fileOffsets[i]);
       int targetRank = rank + rankOffsets[i];
 
-      // Validate coordinates before creating Position
       if (!isValidFile(targetFile) || !isValidRank(targetRank)) {
         continue;
       }
@@ -56,14 +55,12 @@ public class King extends Piece {
     if (canCastleKingside(position, board)) {
       char kingFile = position.getFile();
       int rank = position.getRank();
-      // We already validated the positions in canCastleKingside, so this is safe
       validMoves.add(new Position((char) (kingFile + 2), rank));
     }
 
     if (canCastleQueenside(position, board)) {
       char kingFile = position.getFile();
       int rank = position.getRank();
-      // We already validated the positions in canCastleQueenside, so this is safe
       validMoves.add(new Position((char) (kingFile - 2), rank));
     }
   }
@@ -71,13 +68,11 @@ public class King extends Piece {
   private boolean canCastleKingside(Position position, Board board) {
     int rank = position.getRank();
     char kingFile = position.getFile();
-    char rookFile = (char) ('p'); // original design placed rooks on file 'a' or 'p' for corners
+    char rookFile = (char) ('p');
 
-    // compute target files (do NOT create Position objects yet)
     char f1 = (char) (kingFile + 1);
     char f2 = (char) (kingFile + 2);
 
-    // validate files and rank before constructing Positions
     if (!isValidFile(f1) || !isValidFile(f2) || !isValidFile(rookFile) || !isValidRank(rank)) {
       return false;
     }
@@ -114,14 +109,12 @@ public class King extends Piece {
   private boolean canCastleQueenside(Position position, Board board) {
     int rank = position.getRank();
     char kingFile = position.getFile();
-    char rookFile = 'a'; // original design placed rooks on file 'a' or 'p' for corners
+    char rookFile = 'a';
 
-    // compute target files (do NOT create Position objects yet)
     char f1 = (char) (kingFile - 1);
     char f2 = (char) (kingFile - 2);
     char f3 = (char) (kingFile - 3);
 
-    // validate files and rank before constructing Positions
     if (!isValidFile(f1) || !isValidFile(f2) || !isValidFile(f3) || !isValidFile(rookFile) ||
         !isValidRank(rank)) {
       return false;
