@@ -8,10 +8,15 @@ import java.awt.event.MouseEvent;
 import java.util.Set;
 
 public class BoardPanel extends JPanel {
-  private final Board board;
+  private Board board;
   private final int squareSize = 45;
   private Position selectedPosition = null;
   private Set<Position> validMoves = null;
+  private BoardMoveListener moveListener;
+
+  public interface BoardMoveListener {
+    void onMove(Position source, Position target);
+  }
 
   public BoardPanel(Board board) {
     this.board = board;
@@ -48,10 +53,15 @@ public class BoardPanel extends JPanel {
             }
           } else {
             if (validMoves != null && validMoves.contains(position)) {
-              try {
-                board.movePiece(selectedPosition, position);
-              } catch (Exception ex) {
-                System.err.println("Move failed: " + ex.getMessage());
+              if (moveListener != null) {
+                moveListener.onMove(selectedPosition, position);
+              } else {
+                try {
+                  board.movePiece(selectedPosition, position);
+                } catch (Exception ex) {
+                  System.err.println("Ход не удался: " + ex.getMessage());
+                }
+                repaint();
               }
             }
             selectedPosition = null;
@@ -61,6 +71,15 @@ public class BoardPanel extends JPanel {
         }
       }
     });
+  }
+
+  public void addBoardListener(BoardMoveListener listener) {
+    this.moveListener = listener;
+  }
+
+  public void setBoard(Board board) {
+    this.board = board;
+    repaint();
   }
 
   @Override
@@ -128,6 +147,6 @@ public class BoardPanel extends JPanel {
     java.awt.Color playerColor = PieceRenderer.getPlayerColor(board.getCurrentPlayer());
 
     g2d.setColor(playerColor);
-    g2d.drawString("Current Turn: " + currentPlayerName, 10, statusBarY + 20);
+    g2d.drawString("Текущий ход: " + currentPlayerName, 10, statusBarY + 20);
   }
 }

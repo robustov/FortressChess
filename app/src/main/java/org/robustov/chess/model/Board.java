@@ -52,10 +52,10 @@ public class Board {
   public void placePiece(Piece piece, Position position) {
     Square square = getSquare(position);
     if (!square.isLegal()) {
-      throw new IllegalArgumentException("Cannot place piece on illegal square: " + position);
+      throw new IllegalArgumentException("Невозможно разместить фигуру на нелегальной клетке: " + position);
     }
     if (square.hasPiece()) {
-      throw new IllegalArgumentException("Position " + position + " is already occupied");
+      throw new IllegalArgumentException("Позиция " + position + " уже занята");
     }
 
     square.setPiece(piece);
@@ -68,7 +68,7 @@ public class Board {
   public Optional<Piece> removePiece(Position position) {
     Square square = getSquare(position);
     if (!square.isLegal()) {
-      throw new IllegalArgumentException("Cannot remove piece from illegal square: " + position);
+      throw new IllegalArgumentException("Невозможно удалить фигуру с нелегальной клетки: " + position);
     }
     Optional<Piece> removed = square.removePiece();
     if (removed.isPresent() && removed.get() instanceof King) {
@@ -82,26 +82,26 @@ public class Board {
     Square targetSquare = getSquare(target);
 
     if (!sourceSquare.isLegal() || !targetSquare.isLegal()) {
-      throw new IllegalArgumentException("Cannot move to/from illegal squares");
+      throw new IllegalArgumentException("Невозможно ходить на/с нелегальных клеток");
     }
 
     if (!sourceSquare.hasPiece()) {
-      throw new IllegalArgumentException("No piece at source position: " + source);
+      throw new IllegalArgumentException("Нет фигуры в исходной позиции: " + source);
     }
 
     Piece piece = sourceSquare.getPiece().orElseThrow();
 
     if (piece.getColor() != currentPlayer) {
-      throw new IllegalStateException("Not " + currentPlayer + "'s turn. Current turn: " + currentPlayer);
+      throw new IllegalStateException("Не ход " + currentPlayer + ". Текущий ход: " + currentPlayer);
     }
 
     Set<Position> validMoves = piece.getValidMoves(source, this);
     if (!validMoves.contains(target)) {
-      throw new IllegalArgumentException("Piece cannot move to target: " + target);
+      throw new IllegalArgumentException("Фигура не может ходить в цель: " + target);
     }
 
     if (wouldLeaveKingInCheck(piece.getColor(), source, target)) {
-      throw new IllegalArgumentException("Illegal move: would leave king in check");
+      throw new IllegalArgumentException("Нелегальный ход: оставляет короля под шахом");
     }
 
     Optional<Piece> captured = Optional.empty();
@@ -116,7 +116,7 @@ public class Board {
     try {
       checkAndEliminateMatedPlayers();
     } catch (RuntimeException ex) {
-      System.err.println("Error during check/mate scanning: " + ex.getMessage());
+      System.err.println("Ошибка при проверке мата: " + ex.getMessage());
       ex.printStackTrace();
     } finally {
       advanceTurn();
@@ -132,7 +132,7 @@ public class Board {
     }
   }
 
-  private boolean isPlayerActive(Color color) {
+  public boolean isPlayerActive(Color color) {
     if (kings.containsKey(color)) {
       return true;
     }
@@ -154,7 +154,7 @@ public class Board {
   public Square getSquare(Position position) {
     Square square = squares.get(position);
     if (square == null) {
-      throw new IllegalArgumentException("Invalid position: " + position);
+      throw new IllegalArgumentException("Неверная позиция: " + position);
     }
     return square;
   }
@@ -196,7 +196,7 @@ public class Board {
             return true;
           }
         } catch (RuntimeException ex) {
-          System.err.println("Error while testing attack from " + position + " : " + ex.getMessage());
+          System.err.println("Ошибка при проверке атаки с " + position + " : " + ex.getMessage());
         }
       }
     }
@@ -287,7 +287,7 @@ public class Board {
     if (!toEliminate.isEmpty()) {
       for (Color color : toEliminate) {
         eliminatePlayerPieces(color);
-        System.out.println("Player " + color + " has been checkmated and eliminated from the board.");
+        System.out.println("Игрок " + color + " получил мат и устранен с доски.");
       }
     }
   }
@@ -342,7 +342,7 @@ public class Board {
       Position pos = new Position(entry.getKey());
       Square square = squares.get(pos);
       if (square == null) {
-        throw new IllegalArgumentException("Invalid position in save: " + entry.getKey());
+        throw new IllegalArgumentException("Неверная позиция в сохранении: " + entry.getKey());
       }
       SquareState squareState = entry.getValue();
       if (squareState.piece != null) {

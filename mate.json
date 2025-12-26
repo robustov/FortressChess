@@ -1,0 +1,33 @@
+{
+  "current_player": "YELLOW",
+  "squares": {
+    "e5": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "e6": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "e4": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "p1": {
+      "piece": {
+        "color": "RED",
+        "type": "KING",
+        "moved": false
+      }
+    }
+  }
+}
