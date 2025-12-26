@@ -87,6 +87,7 @@ public class BoardPanel extends JPanel {
     super.paintComponent(g);
     Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
     for (int row = 0; row < 16; row++) {
       for (int col = 0; col < 16; col++) {
@@ -105,6 +106,7 @@ public class BoardPanel extends JPanel {
           g2d.fillRect(x, y, squareSize, squareSize);
 
           g2d.setColor(java.awt.Color.BLACK);
+          g2d.setStroke(new BasicStroke(1.0f));
           g2d.drawRect(x, y, squareSize, squareSize);
 
           if (validMoves != null && validMoves.contains(position)) {
@@ -142,6 +144,7 @@ public class BoardPanel extends JPanel {
 
     g2d.setColor(java.awt.Color.WHITE);
     g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
+    g2d.setStroke(new BasicStroke(1.0f));
 
     String currentPlayerName = board.getCurrentPlayer().name();
     java.awt.Color playerColor = PieceRenderer.getPlayerColor(board.getCurrentPlayer());
