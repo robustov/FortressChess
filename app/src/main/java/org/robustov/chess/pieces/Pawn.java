@@ -46,7 +46,6 @@ public class Pawn extends Piece {
         validMoves.add(captureLeft);
       }
     } else {
-      // Horizontal movers capture vertically
       Position captureUp = new Position(file, rank + 1);
       Position captureDown = new Position(file, rank - 1);
 
@@ -68,10 +67,10 @@ public class Pawn extends Piece {
 
   private int[] getMovementDirection() {
     return switch (getColor()) {
-      case YELLOW -> new int[] { 1, 0 }; // Move right horizontally
-      case BLUE -> new int[] { -1, 0 }; // Move left horizontally
-      case RED -> new int[] { 0, -1 }; // Move down vertically
-      case GREEN -> new int[] { 0, 1 }; // Move down vertically
+      case YELLOW -> new int[] { 1, 0 };
+      case BLUE -> new int[] { -1, 0 };
+      case RED -> new int[] { 0, -1 };
+      case GREEN -> new int[] { 0, 1 };
     };
   }
 

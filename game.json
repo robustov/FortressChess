@@ -113,6 +113,27 @@
         "moved": false
       }
     },
+    "n14": {
+      "piece": {
+        "color": "GREEN",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "m16": {
+      "piece": {
+        "color": "GREEN",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "p16": {
+      "piece": {
+        "color": "GREEN",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
     "d5": {
       "piece": {
         "color": "YELLOW",
@@ -222,6 +243,27 @@
       "piece": {
         "color": "YELLOW",
         "type": "ROOK",
+        "moved": false
+      }
+    },
+    "c3": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "d1": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "a1": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "BISHOP",
         "moved": false
       }
     },
@@ -337,6 +379,27 @@
         "moved": false
       }
     },
+    "c14": {
+      "piece": {
+        "color": "RED",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "d16": {
+      "piece": {
+        "color": "RED",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "a16": {
+      "piece": {
+        "color": "RED",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
     "m5": {
       "piece": {
         "color": "BLUE",
@@ -446,6 +509,27 @@
       "piece": {
         "color": "BLUE",
         "type": "ROOK",
+        "moved": false
+      }
+    },
+    "n3": {
+      "piece": {
+        "color": "BLUE",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "m1": {
+      "piece": {
+        "color": "BLUE",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "p1": {
+      "piece": {
+        "color": "BLUE",
+        "type": "BISHOP",
         "moved": false
       }
     }
