@@ -216,57 +216,6 @@ public class Board {
     return null;
   }
 
-  public void setupFortressPosition() {
-    squares.values().forEach(square -> {
-      if (square.isLegal()) {
-        square.removePiece();
-      }
-    });
-    kings.clear();
-    currentPlayer = Color.YELLOW;
-
-    setupPlayerCorner(Color.YELLOW, 'a', 1, 1);
-
-    setupPlayerCorner(Color.BLUE, 'm', 1, 1);
-
-    setupPlayerCorner(Color.RED, 'a', 13, -1);
-
-    setupPlayerCorner(Color.GREEN, 'm', 13, -1);
-  }
-
-  private void setupPlayerCorner(Color color, char startFile, int startRank, int direction) {
-    for (int i = 0; i < 4; i++) {
-      char file = (char) (startFile + i);
-      int rank = startRank;
-
-      try {
-        Position pawnPos = new Position(file, rank + direction);
-        if (isLegalPosition(pawnPos)) {
-          placePiece(new Pawn(color), pawnPos);
-        }
-
-        Position piecePos = new Position(file, startRank);
-        if (isLegalPosition(piecePos)) {
-          switch (i) {
-            case 0:
-              placePiece(new Rook(color), piecePos);
-              break;
-            case 1:
-              placePiece(new Knight(color), piecePos);
-              break;
-            case 2:
-              placePiece(new Bishop(color), piecePos);
-              break;
-            case 3:
-              placePiece(new King(color), piecePos);
-              break;
-          }
-        }
-      } catch (IllegalArgumentException e) {
-      }
-    }
-  }
-
   public boolean isCheckmate(Color color) {
     if (!kings.containsKey(color)) {
       return false;

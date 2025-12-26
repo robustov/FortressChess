@@ -46,8 +46,8 @@ public class Pawn extends Piece {
         validMoves.add(captureLeft);
       }
     } else {
-      Position captureUp = new Position(file, rank + 1);
-      Position captureDown = new Position(file, rank - 1);
+      Position captureUp = new Position((char) (file + direction[0]), rank + 1);
+      Position captureDown = new Position((char) (file + direction[0]), rank - 1);
 
       if (isValidPosition(captureUp, board) && hasEnemyPiece(captureUp, board)) {
         validMoves.add(captureUp);

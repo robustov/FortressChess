@@ -1,17 +1,17 @@
 package org.robustov.chess.model;
 
 public enum Color {
-    YELLOW,
-    BLUE, 
-    RED,
-    GREEN;
+  YELLOW,
+  BLUE,
+  RED,
+  GREEN;
 
-    public Color getNextPlayer() {
-        return switch (this) {
-            case YELLOW -> BLUE;
-            case BLUE -> RED;
-            case RED -> GREEN;
-            case GREEN -> YELLOW;
-        };
-    }
+  public Color getNextPlayer() {
+    return switch (this) {
+      case YELLOW -> RED;
+      case BLUE -> GREEN;
+      case RED -> BLUE;
+      case GREEN -> YELLOW;
+    };
+  }
 }

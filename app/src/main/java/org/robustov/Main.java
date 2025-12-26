@@ -9,7 +9,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import javax.swing.*;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,43 +16,43 @@ import java.nio.file.Paths;
 public class Main {
   public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
-      Board board = new Board();
       Options options = createOptions();
 
       try {
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
 
-        if (cmd.hasOption("load")) {
-          String filename = cmd.getOptionValue("load");
-          Path filePath = resolveFilePath(filename);
+        if (!cmd.hasOption("load")) {
+          System.err.println("Error: --load argument is required");
+          System.err.println("Usage: --load <filename>");
+          System.exit(1);
+        }
 
-          if (Files.exists(filePath)) {
-            try {
-              String json = Files.readString(filePath);
-              board.loadPosition(json);
-              System.out.println("Loaded game from " + filePath.toAbsolutePath());
-            } catch (Exception e) {
-              System.err.println("Error loading game from " + filePath.toAbsolutePath() + ": " + e.getMessage());
-              System.err.println("Falling back to standard position");
-              board.setupFortressPosition();
-            }
-          } else {
-            System.err.println("File not found: " + filePath.toAbsolutePath());
-            System.err.println("Falling back to standard position");
-            board.setupFortressPosition();
-          }
-        } else {
-          board.setupFortressPosition();
+        String filename = cmd.getOptionValue("load");
+        Path filePath = resolveFilePath(filename);
+
+        if (!Files.exists(filePath)) {
+          System.err.println("Error: File not found: " + filePath.toAbsolutePath());
+          System.exit(1);
+        }
+
+        Board board = new Board();
+        try {
+          String json = Files.readString(filePath);
+          board.loadPosition(json);
+          System.out.println("Loaded game from " + filePath.toAbsolutePath());
+
+          ChessFrame frame = new ChessFrame(board);
+          frame.setVisible(true);
+        } catch (Exception e) {
+          System.err.println("Error loading game from " + filePath.toAbsolutePath() + ": " + e.getMessage());
+          System.exit(1);
         }
       } catch (ParseException e) {
         System.err.println("Error parsing command line arguments: " + e.getMessage());
         System.err.println("Usage: --load <filename>");
-        board.setupFortressPosition();
+        System.exit(1);
       }
-
-      ChessFrame frame = new ChessFrame(board);
-      frame.setVisible(true);
     });
   }
 
@@ -64,6 +63,7 @@ public class Main {
         .hasArg(true)
         .argName("file")
         .desc("Load game from JSON file")
+        .required()
         .build());
     return options;
   }
