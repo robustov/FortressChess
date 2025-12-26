@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class BoardPanel extends JPanel {
   private final Board board;
-  private final int squareSize = 45; // Increased size for better piece visibility
+  private final int squareSize = 45;
   private Position selectedPosition = null;
   private Set<Position> validMoves = null;
 

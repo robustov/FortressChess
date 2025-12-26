@@ -8,6 +8,7 @@ import org.robustov.chess.model.Position;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Optional;
 
 public class King extends Piece {
   public King(Color color) {
@@ -55,12 +56,14 @@ public class King extends Piece {
     if (canCastleKingside(position, board)) {
       char kingFile = position.getFile();
       int rank = position.getRank();
+      // We already validated the positions in canCastleKingside, so this is safe
       validMoves.add(new Position((char) (kingFile + 2), rank));
     }
 
     if (canCastleQueenside(position, board)) {
       char kingFile = position.getFile();
       int rank = position.getRank();
+      // We already validated the positions in canCastleQueenside, so this is safe
       validMoves.add(new Position((char) (kingFile - 2), rank));
     }
   }
@@ -68,11 +71,19 @@ public class King extends Piece {
   private boolean canCastleKingside(Position position, Board board) {
     int rank = position.getRank();
     char kingFile = position.getFile();
-    char rookFile = (char) ('p');
+    char rookFile = (char) ('p'); // original design placed rooks on file 'a' or 'p' for corners
 
-    // Check if squares between king and rook are legal and empty
-    Position firstSquare = new Position((char) (kingFile + 1), rank);
-    Position secondSquare = new Position((char) (kingFile + 2), rank);
+    // compute target files (do NOT create Position objects yet)
+    char f1 = (char) (kingFile + 1);
+    char f2 = (char) (kingFile + 2);
+
+    // validate files and rank before constructing Positions
+    if (!isValidFile(f1) || !isValidFile(f2) || !isValidFile(rookFile) || !isValidRank(rank)) {
+      return false;
+    }
+
+    Position firstSquare = new Position(f1, rank);
+    Position secondSquare = new Position(f2, rank);
 
     if (!isValidPosition(firstSquare, board) || !isValidPosition(secondSquare, board)) {
       return false;
@@ -83,9 +94,17 @@ public class King extends Piece {
     }
 
     Position rookPosition = new Position(rookFile, rank);
-    if (!isValidPosition(rookPosition, board) || !board.hasPiece(rookPosition) ||
-        !(board.getPiece(rookPosition).get() instanceof Rook rook) ||
-        rook.hasMoved()) {
+    if (!isValidPosition(rookPosition, board) || !board.hasPiece(rookPosition)) {
+      return false;
+    }
+
+    Optional<Piece> rookCandidate = board.getPiece(rookPosition);
+    if (rookCandidate.isEmpty() || !(rookCandidate.get() instanceof Rook)) {
+      return false;
+    }
+
+    Rook rook = (Rook) rookCandidate.get();
+    if (rook.hasMoved()) {
       return false;
     }
 
@@ -95,11 +114,22 @@ public class King extends Piece {
   private boolean canCastleQueenside(Position position, Board board) {
     int rank = position.getRank();
     char kingFile = position.getFile();
-    char rookFile = 'a';
+    char rookFile = 'a'; // original design placed rooks on file 'a' or 'p' for corners
 
-    Position firstSquare = new Position((char) (kingFile - 1), rank);
-    Position secondSquare = new Position((char) (kingFile - 2), rank);
-    Position thirdSquare = new Position((char) (kingFile - 3), rank);
+    // compute target files (do NOT create Position objects yet)
+    char f1 = (char) (kingFile - 1);
+    char f2 = (char) (kingFile - 2);
+    char f3 = (char) (kingFile - 3);
+
+    // validate files and rank before constructing Positions
+    if (!isValidFile(f1) || !isValidFile(f2) || !isValidFile(f3) || !isValidFile(rookFile) ||
+        !isValidRank(rank)) {
+      return false;
+    }
+
+    Position firstSquare = new Position(f1, rank);
+    Position secondSquare = new Position(f2, rank);
+    Position thirdSquare = new Position(f3, rank);
 
     if (!isValidPosition(firstSquare, board) || !isValidPosition(secondSquare, board) ||
         !isValidPosition(thirdSquare, board)) {
@@ -111,9 +141,17 @@ public class King extends Piece {
     }
 
     Position rookPosition = new Position(rookFile, rank);
-    if (!isValidPosition(rookPosition, board) || !board.hasPiece(rookPosition) ||
-        !(board.getPiece(rookPosition).get() instanceof Rook rook) ||
-        rook.hasMoved()) {
+    if (!isValidPosition(rookPosition, board) || !board.hasPiece(rookPosition)) {
+      return false;
+    }
+
+    Optional<Piece> rookCandidate = board.getPiece(rookPosition);
+    if (rookCandidate.isEmpty() || !(rookCandidate.get() instanceof Rook)) {
+      return false;
+    }
+
+    Rook rook = (Rook) rookCandidate.get();
+    if (rook.hasMoved()) {
       return false;
     }
 

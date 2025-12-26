@@ -1,13 +1,15 @@
 package org.robustov.chess.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import org.robustov.chess.pieces.Bishop;
 import org.robustov.chess.pieces.King;
 import org.robustov.chess.pieces.Queen;
 import org.robustov.chess.pieces.Rook;
 import org.robustov.chess.pieces.Pawn;
-import org.robustov.chess.pieces.Bishop;
 import org.robustov.chess.pieces.Knight;
 
 public class Board {
@@ -65,7 +67,11 @@ public class Board {
     if (!square.isLegal()) {
       throw new IllegalArgumentException("Cannot remove piece from illegal square: " + position);
     }
-    return square.removePiece();
+    Optional<Piece> removed = square.removePiece();
+    if (removed.isPresent() && removed.get() instanceof King) {
+      kings.remove(removed.get().getColor());
+    }
+    return removed;
   }
 
   public void movePiece(Position source, Position target) {
@@ -86,19 +92,56 @@ public class Board {
       throw new IllegalStateException("Not " + currentPlayer + "'s turn. Current turn: " + currentPlayer);
     }
 
+    Set<Position> validMoves = piece.getValidMoves(source, this);
+    if (!validMoves.contains(target)) {
+      throw new IllegalArgumentException("Piece cannot move to target: " + target);
+    }
+
+    if (wouldLeaveKingInCheck(piece.getColor(), source, target)) {
+      throw new IllegalArgumentException("Illegal move: would leave king in check");
+    }
+
+    Optional<Piece> captured = Optional.empty();
     if (targetSquare.hasPiece()) {
-      targetSquare.removePiece();
+      captured = removePiece(target);
     }
 
     sourceSquare.removePiece();
     targetSquare.setPiece(piece);
     piece.markAsMoved();
 
-    advanceTurn();
+    try {
+      checkAndEliminateMatedPlayers();
+    } catch (RuntimeException ex) {
+      System.err.println("Error during check/mate scanning: " + ex.getMessage());
+      ex.printStackTrace();
+    } finally {
+      advanceTurn();
+    }
   }
 
   private void advanceTurn() {
-    currentPlayer = currentPlayer.getNextPlayer();
+    for (int i = 0; i < Color.values().length; i++) {
+      currentPlayer = currentPlayer.getNextPlayer();
+      if (isPlayerActive(currentPlayer)) {
+        return;
+      }
+    }
+  }
+
+  private boolean isPlayerActive(Color color) {
+    if (kings.containsKey(color)) {
+      return true;
+    }
+    for (Square s : squares.values()) {
+      if (!s.isLegal())
+        continue;
+      Optional<Piece> p = s.getPiece();
+      if (p.isPresent() && p.get().getColor() == color) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public Color getCurrentPlayer() {
@@ -145,8 +188,12 @@ public class Board {
       Optional<Piece> pieceOptional = getPiece(position);
       if (pieceOptional.isPresent() && pieceOptional.get().getColor() != color) {
         Piece piece = pieceOptional.get();
-        if (piece.isValidMove(position, kingPosition, this)) {
-          return true;
+        try {
+          if (piece.isValidMove(position, kingPosition, this)) {
+            return true;
+          }
+        } catch (RuntimeException ex) {
+          System.err.println("Error while testing attack from " + position + " : " + ex.getMessage());
         }
       }
     }
@@ -175,16 +222,12 @@ public class Board {
     kings.clear();
     currentPlayer = Color.YELLOW;
 
-    // Player 1 (Yellow) - bottom-left corner area
     setupPlayerCorner(Color.YELLOW, 'a', 1, 1);
 
-    // Player 2 (Blue) - bottom-right corner area
     setupPlayerCorner(Color.BLUE, 'm', 1, 1);
 
-    // Player 3 (Red) - top-left corner area
     setupPlayerCorner(Color.RED, 'a', 13, -1);
 
-    // Player 4 (Green) - top-right corner area
     setupPlayerCorner(Color.GREEN, 'm', 13, -1);
   }
 
@@ -219,5 +262,94 @@ public class Board {
       } catch (IllegalArgumentException e) {
       }
     }
+  }
+
+  public boolean isCheckmate(Color color) {
+    if (!kings.containsKey(color)) {
+      return false;
+    }
+
+    if (!isKingInCheck(color)) {
+      return false;
+    }
+
+    for (Map.Entry<Position, Square> entry : squares.entrySet()) {
+      Position from = entry.getKey();
+      Square square = entry.getValue();
+      if (!square.isLegal())
+        continue;
+      Optional<Piece> pOpt = square.getPiece();
+      if (pOpt.isEmpty())
+        continue;
+      Piece piece = pOpt.get();
+      if (piece.getColor() != color)
+        continue;
+
+      Set<Position> moves = piece.getValidMoves(from, this);
+      for (Position to : moves) {
+        if (!wouldLeaveKingInCheck(color, from, to)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  private boolean wouldLeaveKingInCheck(Color color, Position from, Position to) {
+    Square src = getSquare(from);
+    Square dst = getSquare(to);
+
+    Piece moving = src.getPiece().orElseThrow();
+    Optional<Piece> captured = dst.getPiece();
+
+    src.removePiece();
+    if (dst.hasPiece()) {
+      dst.removePiece();
+    }
+    dst.setPiece(moving);
+
+    boolean kingStillInCheck;
+    try {
+      kingStillInCheck = isKingInCheck(color);
+    } finally {
+      dst.removePiece();
+      src.setPiece(moving);
+      if (captured.isPresent()) {
+        dst.setPiece(captured.get());
+      }
+    }
+
+    return kingStillInCheck;
+  }
+
+  private void checkAndEliminateMatedPlayers() {
+    Set<Color> toEliminate = new HashSet<>();
+
+    for (Color color : Color.values()) {
+      if (kings.containsKey(color) && isCheckmate(color)) {
+        toEliminate.add(color);
+      }
+    }
+
+    if (!toEliminate.isEmpty()) {
+      for (Color color : toEliminate) {
+        eliminatePlayerPieces(color);
+        System.out.println("Player " + color + " has been checkmated and eliminated from the board.");
+      }
+    }
+  }
+
+  private void eliminatePlayerPieces(Color color) {
+    for (Map.Entry<Position, Square> entry : squares.entrySet()) {
+      Square square = entry.getValue();
+      if (!square.isLegal())
+        continue;
+      Optional<Piece> pOpt = square.getPiece();
+      if (pOpt.isPresent() && pOpt.get().getColor() == color) {
+        square.removePiece();
+      }
+    }
+    kings.remove(color);
   }
 }
