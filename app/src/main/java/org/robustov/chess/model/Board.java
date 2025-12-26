@@ -364,7 +364,6 @@ public class Board {
       Position pos = entry.getKey();
       Square square = entry.getValue();
       SquareState squareState = new SquareState();
-      squareState.legal = square.isLegal();
       if (square.hasPiece()) {
         Piece piece = square.getPiece().get();
         PieceState pieceState = new PieceState();
@@ -428,8 +427,6 @@ public class Board {
   }
 
   public static class SquareState {
-    @SerializedName("legal")
-    boolean legal;
     @SerializedName("piece")
     PieceState piece;
   }

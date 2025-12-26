@@ -22,13 +22,11 @@ public class Pawn extends Piece {
     char file = position.getFile();
     int rank = position.getRank();
 
-    // Forward move (single step)
     Position forward = new Position((char) (file + direction[0]), rank + direction[1]);
     if (isValidPosition(forward, board) && !board.hasPiece(forward)) {
       validMoves.add(forward);
 
-      // Double forward move from starting position
-      if (!hasMoved() && isStartingPosition(position)) {
+      if (!hasMoved()) {
         Position doubleForward = new Position((char) (file + 2 * direction[0]), rank + 2 * direction[1]);
         if (isValidPosition(doubleForward, board) && !board.hasPiece(doubleForward)) {
           validMoves.add(doubleForward);
@@ -36,9 +34,7 @@ public class Pawn extends Piece {
       }
     }
 
-    // Capture moves (diagonal for vertical movers, forward for horizontal movers)
     if (movesVertically()) {
-      // Vertical movers capture diagonally
       Position captureRight = new Position((char) (file + 1), rank + direction[1]);
       Position captureLeft = new Position((char) (file - 1), rank + direction[1]);
 
@@ -75,31 +71,8 @@ public class Pawn extends Piece {
       case YELLOW -> new int[] { 1, 0 }; // Move right horizontally
       case BLUE -> new int[] { -1, 0 }; // Move left horizontally
       case RED -> new int[] { 0, -1 }; // Move down vertically
-      case GREEN -> new int[] { 0, -1 }; // Move down vertically
+      case GREEN -> new int[] { 0, 1 }; // Move down vertically
     };
-  }
-
-  private Position[] getStartingPositions() {
-    return switch (getColor()) {
-      case YELLOW ->
-        new Position[] { new Position('a', 1), new Position('b', 1), new Position('c', 1), new Position('d', 1) };
-      case BLUE ->
-        new Position[] { new Position('m', 1), new Position('n', 1), new Position('o', 1), new Position('p', 1) };
-      case RED ->
-        new Position[] { new Position('a', 16), new Position('b', 16), new Position('c', 16), new Position('d', 16) };
-      case GREEN ->
-        new Position[] { new Position('m', 16), new Position('n', 16), new Position('o', 16), new Position('p', 16) };
-    };
-  }
-
-  private boolean isStartingPosition(Position position) {
-    Position[] starts = getStartingPositions();
-    for (Position start : starts) {
-      if (start.equals(position)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private boolean hasEnemyPiece(Position position, Board board) {

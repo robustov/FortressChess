@@ -1,0 +1,261 @@
+{
+  "current_player": "YELLOW",
+  "squares": {
+    "a1": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "b1": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "c1": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "d1": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "a2": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "b2": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "c2": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d2": {
+      "legal": true,
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m1": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "n1": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "o1": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "p1": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "m2": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "n2": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "o2": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "p2": {
+      "legal": true,
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "a13": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "b13": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "c13": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "d13": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "a14": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "b14": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "c14": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d14": {
+      "legal": true,
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m13": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "n13": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "o13": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "p13": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "m14": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "n14": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "o14": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "p14": {
+      "legal": true,
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    }
+  }
+}

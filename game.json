@@ -1,0 +1,453 @@
+{
+  "current_player": "YELLOW",
+  "squares": {
+    "e4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "f4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "g4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "h4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "i4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "j4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "k4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "l4": {
+      "piece": {
+        "color": "GREEN",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "e3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "f3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "g3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "h3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "i3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "j3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "k3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "l3": {
+      "piece": {
+        "color": "GREEN",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "d5": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d6": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d7": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d8": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d9": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d10": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d11": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "d12": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "c5": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "c6": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "c7": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "c8": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "c9": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "c10": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "c11": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "c12": {
+      "piece": {
+        "color": "YELLOW",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "e13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "f13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "g13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "h13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "i13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "j13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "k13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "l13": {
+      "piece": {
+        "color": "RED",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "e14": {
+      "piece": {
+        "color": "RED",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "f14": {
+      "piece": {
+        "color": "RED",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "g14": {
+      "piece": {
+        "color": "RED",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "h14": {
+      "piece": {
+        "color": "RED",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "i14": {
+      "piece": {
+        "color": "RED",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "j14": {
+      "piece": {
+        "color": "RED",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "k14": {
+      "piece": {
+        "color": "RED",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "l14": {
+      "piece": {
+        "color": "RED",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "m5": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m6": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m7": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m8": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m9": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m10": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m11": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "m12": {
+      "piece": {
+        "color": "BLUE",
+        "type": "PAWN",
+        "moved": false
+      }
+    },
+    "n5": {
+      "piece": {
+        "color": "BLUE",
+        "type": "ROOK",
+        "moved": false
+      }
+    },
+    "n6": {
+      "piece": {
+        "color": "BLUE",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "n7": {
+      "piece": {
+        "color": "BLUE",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "n8": {
+      "piece": {
+        "color": "BLUE",
+        "type": "KING",
+        "moved": false
+      }
+    },
+    "n9": {
+      "piece": {
+        "color": "BLUE",
+        "type": "QUEEN",
+        "moved": false
+      }
+    },
+    "n10": {
+      "piece": {
+        "color": "BLUE",
+        "type": "BISHOP",
+        "moved": false
+      }
+    },
+    "n11": {
+      "piece": {
+        "color": "BLUE",
+        "type": "KNIGHT",
+        "moved": false
+      }
+    },
+    "n12": {
+      "piece": {
+        "color": "BLUE",
+        "type": "ROOK",
+        "moved": false
+      }
+    }
+  }
+}
