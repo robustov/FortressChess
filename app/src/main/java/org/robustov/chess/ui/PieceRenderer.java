@@ -23,10 +23,15 @@ public class PieceRenderer {
     });
 
     PATH_DATA.put(PieceType.QUEEN, new String[] {
-        "M 22 9 C 19.792 9 18 10.792 18 13 C 18 13.885103 18.29397 14.712226 18.78125 15.375 C 16.829274 16.496917 15.5 18.588492 15.5 21 C 15.5 23.033947 16.442042 24.839082 17.90625 26.03125 C 14.907101 27.08912 10.5 31.578049 10.5 39.5 L 33.5 39.5 C 33.5 31.578049 29.092899 27.08912 26.09375 26.03125 C 27.557958 24.839082 28.5 23.033948 28.5 21 C 28.5 18.588492 27.170726 16.496917 25.21875 15.375 C 25.70603 14.712226 26 13.885103 26 13 C 26 10.792 24.208 9 22 9 z",
+        "M 9,26 C 17.5,24.5 30,24.5 36,26 L 38,14 L 31,25 L 31,11 L 25.5,24.5 L 22.5,9.5 L 19.5,24.5 L 14,10.5 L 14,25 L 7,14 L 9,26 z",
         "M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 10.5,36 10.5,36 C 9,37.5 11,38.5 11,38.5 C 17.5,39.5 27.5,39.5 34,38.5 C 34,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z",
         "M 11.5,30 C 15,29 30,29 33.5,30",
-        "M 12,33.5 C 18,32.5 27,32.5 33,33.5"
+        "M 12,33.5 C 18,32.5 27,32.5 33,33.5",
+        "M 6,13 A 2 2 0 1 1 10,13 A 2 2 0 1 1 6,13 z",
+        "M 22.5,8.5 A 2 2 0 1 1 26.5,8.5 A 2 2 0 1 1 22.5,8.5 z",
+        "M 39,13 A 2 2 0 1 1 43,13 A 2 2 0 1 1 39,13 z",
+        "M 14,10.5 A 2 2 0 1 1 18,10.5 A 2 2 0 1 1 14,10.5 z",
+        "M 31,11 A 2 2 0 1 1 35,11 A 2 2 0 1 1 31,11 z"
     });
 
     PATH_DATA.put(PieceType.ROOK, new String[] {
@@ -146,6 +151,22 @@ public class PieceRenderer {
           }
           break;
 
+        case 'A':
+        case 'a':
+          if (coords.length >= 7) {
+            float rx = Float.parseFloat(coords[0]);
+            float ry = Float.parseFloat(coords[1]);
+            boolean largeArcFlag = Integer.parseInt(coords[3]) != 0;
+            boolean sweepFlag = Integer.parseInt(coords[4]) != 0;
+            float x = Float.parseFloat(coords[5]);
+            float y = Float.parseFloat(coords[6]);
+
+            if (rx == ry && rx > 0) {
+              path.append(createCirclePath(currentX, currentY, rx, x, y, largeArcFlag, sweepFlag), true);
+            }
+          }
+          break;
+
         case 'z':
         case 'Z':
           path.closePath();
@@ -153,6 +174,36 @@ public class PieceRenderer {
       }
     }
 
+    return path;
+  }
+
+  private static GeneralPath createCirclePath(float startX, float startY, float radius, float endX, float endY,
+      boolean largeArc, boolean sweep) {
+    GeneralPath path = new GeneralPath();
+    path.moveTo(startX, startY);
+
+    float centerX = (startX + endX) / 2;
+    float centerY = (startY + endY) / 2;
+
+    float angleStart = (float) Math.atan2(startY - centerY, startX - centerX);
+    float angleEnd = (float) Math.atan2(endY - centerY, endX - centerX);
+
+    if (sweep && angleEnd < angleStart)
+      angleEnd += 2 * (float) Math.PI;
+    if (!sweep && angleEnd > angleStart)
+      angleEnd -= 2 * (float) Math.PI;
+
+    float angleStep = 0.1f;
+    float currentAngle = angleStart;
+
+    while ((sweep && currentAngle < angleEnd) || (!sweep && currentAngle > angleEnd)) {
+      float x = centerX + (float) (radius * Math.cos(currentAngle));
+      float y = centerY + (float) (radius * Math.sin(currentAngle));
+      path.lineTo(x, y);
+      currentAngle += sweep ? angleStep : -angleStep;
+    }
+
+    path.lineTo(endX, endY);
     return path;
   }
 

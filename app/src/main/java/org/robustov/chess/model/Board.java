@@ -104,9 +104,7 @@ public class Board {
       throw new IllegalArgumentException("Нелегальный ход: оставляет короля под шахом");
     }
 
-    Optional<Piece> captured = Optional.empty();
     if (targetSquare.hasPiece()) {
-      captured = removePiece(target);
     }
 
     sourceSquare.removePiece();
@@ -133,15 +131,39 @@ public class Board {
   }
 
   public boolean isPlayerActive(Color color) {
-    if (kings.containsKey(color)) {
-      return true;
-    }
-    for (Square s : squares.values()) {
-      if (!s.isLegal())
+    return hasPieces(color) || kings.containsKey(color);
+  }
+
+  private boolean hasPieces(Color color) {
+    for (Square square : squares.values()) {
+      if (!square.isLegal())
         continue;
-      Optional<Piece> p = s.getPiece();
-      if (p.isPresent() && p.get().getColor() == color) {
+      Optional<Piece> piece = square.getPiece();
+      if (piece.isPresent() && piece.get().getColor() == color) {
         return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasLegalMoves(Color color) {
+    for (Map.Entry<Position, Square> entry : squares.entrySet()) {
+      Position from = entry.getKey();
+      Square square = entry.getValue();
+      if (!square.isLegal())
+        continue;
+      Optional<Piece> pOpt = square.getPiece();
+      if (pOpt.isEmpty())
+        continue;
+      Piece piece = pOpt.get();
+      if (piece.getColor() != color)
+        continue;
+
+      Set<Position> moves = piece.getValidMoves(from, this);
+      for (Position to : moves) {
+        if (!wouldLeaveKingInCheck(color, from, to)) {
+          return true;
+        }
       }
     }
     return false;
@@ -225,27 +247,7 @@ public class Board {
       return false;
     }
 
-    for (Map.Entry<Position, Square> entry : squares.entrySet()) {
-      Position from = entry.getKey();
-      Square square = entry.getValue();
-      if (!square.isLegal())
-        continue;
-      Optional<Piece> pOpt = square.getPiece();
-      if (pOpt.isEmpty())
-        continue;
-      Piece piece = pOpt.get();
-      if (piece.getColor() != color)
-        continue;
-
-      Set<Position> moves = piece.getValidMoves(from, this);
-      for (Position to : moves) {
-        if (!wouldLeaveKingInCheck(color, from, to)) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+    return !hasLegalMoves(color);
   }
 
   private boolean wouldLeaveKingInCheck(Color color, Position from, Position to) {
@@ -275,19 +277,39 @@ public class Board {
     return kingStillInCheck;
   }
 
+  public boolean isStalemate(Color color) {
+    if (!kings.containsKey(color)) {
+      return false;
+    }
+
+    if (isKingInCheck(color)) {
+      return false;
+    }
+
+    return !hasLegalMoves(color);
+  }
+
   private void checkAndEliminateMatedPlayers() {
     Set<Color> toEliminate = new HashSet<>();
 
     for (Color color : Color.values()) {
-      if (kings.containsKey(color) && isCheckmate(color)) {
+      if (kings.containsKey(color)) {
+        if (isCheckmate(color)) {
+          toEliminate.add(color);
+          System.out.println("Игрок " + color + " получил мат и устранен с доски.");
+        } else if (isStalemate(color)) {
+          toEliminate.add(color);
+          System.out.println("Игрок " + color + " в патовой ситуации и устранен с доски.");
+        }
+      } else if (!hasPieces(color)) {
         toEliminate.add(color);
+        System.out.println("Игрок " + color + " не имеет фигур и устранен с доски.");
       }
     }
 
     if (!toEliminate.isEmpty()) {
       for (Color color : toEliminate) {
         eliminatePlayerPieces(color);
-        System.out.println("Игрок " + color + " получил мат и устранен с доски.");
       }
     }
   }
